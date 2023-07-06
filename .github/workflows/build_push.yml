@@ -1,0 +1,63 @@
+name: Build Main Push Request
+on:
+  push:
+    branches: 'master'
+
+jobs:
+  text_job:
+    name: Assemble
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run Debug Tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Run Debug ktlint
+        run: ./gradlew ktlintDebugCheck
+
+      - name: Run Debug Lint
+        run: ./gradlew lintDebug
+
+      - name: Assemble Debug
+        run: ./gradlew assembleDebug
+
+      - name: Upload Test Reports
+        if: ${{ aways() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/'
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: app/build/outputs/apk/debug/**.apk
+
+      # 슬랙으로 자동 메세지 보내기
+#      - uses: technote-space/workflow-conclusion-action@v1
+#      - uses: 8398a7/action-slack@v3
+#        with:
+#          status: ${{ evn.WORKFLOW_CONCLUSION }}
+#          fields: commit,ref,workflow,eventName
+#          author_name: ${{ github.actor }}
+#          icon_emoji: ':robot_face:'
+#          username: "Pull Request Build Status"
+#          text: |
+#            ${{ env.WORKFLOW_CONCLUSION }}:
+#            https://github.com/n8ebel/GitHubActionsAutomationSandbox/actions/runs/${{ github.run_id }}
+#          env:
+#            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
