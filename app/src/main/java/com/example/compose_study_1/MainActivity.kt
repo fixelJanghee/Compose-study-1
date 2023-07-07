@@ -59,15 +59,27 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                Calculator(
-                    state = state,
-                    onAction = viewModel::onAction,
-                    buttonSpacing = buttonSpacing,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MediumGray)
-                        .padding(16.dp)
-                )
+//                Calculator(
+//                    state = state,
+//                    onAction = viewModel::onAction,
+//                    buttonSpacing = buttonSpacing,
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .background(MediumGray)
+//                        .padding(16.dp)
+//                )
+                MainScreen(appbarName = "Main AppBar") { paddingValues ->
+                    Column(
+                        modifier = Modifier.padding(paddingValues),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Greeting(name = "Hello World!!")
+                        Greeting(name = "Test 1")
+                        Greeting(name = "Test 2")
+                        Greeting(name = "Test test test test test test 3")
+                    }
+                }
             }
         }
     }
