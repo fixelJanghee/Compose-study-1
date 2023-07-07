@@ -21,7 +21,25 @@ android {
         }
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = File("./file/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
+        getByName("debug") {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = getByName("debug").signingConfig
+        }
+
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
